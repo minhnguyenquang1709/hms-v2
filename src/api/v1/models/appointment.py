@@ -37,12 +37,12 @@ class Appointment(Base):
 
     # Foreign Keys
     patient_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("patients.id"), nullable=False
+        ForeignKey("patient.id"), nullable=False
     )
     department_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("departments.id"), nullable=False
+        ForeignKey("department.id"), nullable=False
     )
-    doctor_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("doctors.id"))
+    doctor_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("doctor.id"))
 
     # --- Relationships ---
     patient: Mapped["Patient"] = relationship(back_populates="appointments")

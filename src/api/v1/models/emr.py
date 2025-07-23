@@ -33,19 +33,19 @@ class EMR(Base):
 
     # Foreign Keys
     appointment_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("appointments.id"), unique=True, nullable=False
+        ForeignKey("appointment.id"), unique=True, nullable=False
     )
     patient_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("patients.id"), nullable=False
+        ForeignKey("patient.id"), nullable=False
     )
     doctor_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("doctors.id"), nullable=False
+        ForeignKey("doctor.id"), nullable=False
     )
 
     # --- Relationships ---
     # 1 medical record - 1 appointment
-    appointment: Mapped["Appointment"] = relationship(back_populates="medical_record")
+    appointment: Mapped["Appointment"] = relationship(back_populates="emr")
     # 1 medical record - 1 patient
-    patient: Mapped["Patient"] = relationship(back_populates="medical_records")
+    patient: Mapped["Patient"] = relationship(back_populates="emrs")
     # 1 medical record - 1 doctor
-    doctor: Mapped["Doctor"] = relationship(back_populates="medical_records")
+    doctor: Mapped["Doctor"] = relationship(back_populates="emrs")

@@ -32,7 +32,7 @@ class Doctor(Base):
     #     ForeignKey("users.id"), unique=True, nullable=False
     # )
     department_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("departments.id"), nullable=False
+        ForeignKey("department.id"), nullable=False
     )
 
     # --- Relationships ---
@@ -45,5 +45,5 @@ class Doctor(Base):
     appointments: Mapped[List["Appointment"]] = relationship(back_populates="doctor")
 
     # 1 doctor - many medical records
-    medical_records: Mapped[List["EMR"]] = relationship(back_populates="doctor")
+    emrs: Mapped[List["EMR"]] = relationship(back_populates="doctor")
 

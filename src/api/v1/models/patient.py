@@ -42,6 +42,6 @@ class Patient(Base):
     )
 
     # 1 patient - many medical records
-    medical_records: Mapped[List["EMR"]] = relationship(
+    emrs: Mapped[List["EMR"]] = relationship(
         back_populates="patient", cascade="all, delete-orphan"
     )

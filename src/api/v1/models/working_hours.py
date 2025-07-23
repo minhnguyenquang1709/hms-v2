@@ -23,7 +23,7 @@ class WorkingHours(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     department_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("departments.id"), nullable=False
+        ForeignKey("department.id"), nullable=False
     )
     # 1=Monday, 2=Tuesday, ..., 7=Sunday by ISO 8601
     day_of_week: Mapped[int] = mapped_column(Integer, nullable=False)
