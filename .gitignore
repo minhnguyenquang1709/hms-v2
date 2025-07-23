@@ -1,1 +1,9 @@
 docs/
+
+.mypy_cache/
+
+alembic/
+
+logs/
+
+.env
