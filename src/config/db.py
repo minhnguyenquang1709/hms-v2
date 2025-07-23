@@ -11,7 +11,8 @@ from sqlalchemy.ext.asyncio import (
     AsyncConnection,
 )
 from sqlalchemy.orm import DeclarativeBase, declarative_base
-import contextlib # allow context management.
+import contextlib  # allow context management.
+
 # context manager:
 # - allows you to allocate and release resources precisely when you want to.
 # - ensures resources are always closed at the end
@@ -82,7 +83,7 @@ class DatabaseSessionManager:
     @contextlib.asynccontextmanager
     async def connect(self) -> AsyncIterator[AsyncConnection]:
         """
-        Context manager to get a database connection.
+        Context manager to create a database connection.
 
         Returns:
             AsyncIterator[AsyncConnection]: An asynchronous iterator that yields a database connection.
@@ -96,3 +97,38 @@ class DatabaseSessionManager:
             except Exception as e:
                 await conn.rollback()
                 raise e
+
+    @contextlib.asynccontextmanager
+    async def session(self) -> AsyncIterator[AsyncSession]:
+        """
+        Context manager to create a database session.
+
+        Returns:
+            AsyncIterator[AsyncSession]: An asynchronous iterator that yields a database session.
+        """
+        if self._sessionmaker is None:
+            raise Exception("DatabaseSessionManager is not initialized.")
+
+        session = self._sessionmaker()
+        try:
+            yield session
+        except Exception as e:
+            await session.rollback()
+            raise e
+        finally:
+            await session.close()
+
+    # for testing
+    async def create_all(self, connection: AsyncConnection):
+        await connection.run_sync(Base.metadata.create_all)
+
+    async def drop_all(self, connection: AsyncConnection):
+        await connection.run_sync(Base.metadata.drop_all)
+
+
+session_manager = DatabaseSessionManager()
+
+
+async def get_db():
+    async with session_manager.session() as session:
+        yield session
