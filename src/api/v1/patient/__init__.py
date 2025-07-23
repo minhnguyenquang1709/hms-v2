@@ -1,1 +1,1 @@
-from .controller import router
+from .patient_controller import router

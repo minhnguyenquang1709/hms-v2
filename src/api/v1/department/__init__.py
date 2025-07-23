@@ -1,1 +1,1 @@
-from .controller import router
+from .department_controller import router

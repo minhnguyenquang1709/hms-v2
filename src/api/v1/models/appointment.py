@@ -9,6 +9,7 @@ from sqlalchemy.orm import (
 import uuid
 from datetime import datetime
 
+# avoid circular imports
 if TYPE_CHECKING:
     from .patient import Patient
     from .doctor import Doctor
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class Appointment(Base):
-    __tablename__ = "appointments"
+    __tablename__ = "appointment"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4

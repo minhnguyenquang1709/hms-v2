@@ -1,1 +1,1 @@
-from .controller import router
+from .appointment_controller import router
