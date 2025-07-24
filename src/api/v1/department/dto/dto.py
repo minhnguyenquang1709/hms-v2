@@ -7,6 +7,8 @@ class DepartmentDto(BaseModel):
     name: str
     description: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class DepartmentCreateDto(BaseModel):
     name: str
