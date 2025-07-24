@@ -5,3 +5,5 @@ docs/
 logs/
 
 .env
+
+__pycache__/
