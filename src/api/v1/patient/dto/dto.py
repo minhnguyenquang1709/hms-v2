@@ -1,12 +1,12 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import date
-from typing import List, Optional
+from typing import List, Optional, Literal
 from uuid import UUID
 
 class PatientDto(BaseModel):
     id: UUID
     name: str
-    gender: str
+    gender: Literal["Male", "Female"]
     dob: date
     phone: str
     address: str
@@ -16,7 +16,7 @@ class PatientDto(BaseModel):
 
 class PatientCreateDto(BaseModel):
     name: str
-    gender: str
+    gender: Literal["Male", "Female"]
     dob: date
     phone: str
     address: str
@@ -24,7 +24,7 @@ class PatientCreateDto(BaseModel):
 
 class PatientUpdateDto(BaseModel):
     name: Optional[str] = None
-    gender: Optional[str] = None
+    gender: Optional[Literal["Male", "Female"]] = None
     dob: Optional[date] = None
     phone: Optional[str] = None
     address: Optional[str] = None

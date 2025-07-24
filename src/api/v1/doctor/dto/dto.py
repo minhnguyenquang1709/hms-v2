@@ -7,7 +7,7 @@ from uuid import UUID
 class DoctorDto(BaseModel):
     id: UUID
     name: str
-    gender: str
+    gender: Literal["Male", "Female"]
     dob: date
     specialty: str
     phone: str
@@ -19,7 +19,7 @@ class DoctorDto(BaseModel):
 
 class DoctorCreateDto(BaseModel):
     name: str
-    gender: str
+    gender: Literal["Male", "Female"]
     dob: date
     specialty: str
     phone: str
