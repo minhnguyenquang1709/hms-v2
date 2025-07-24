@@ -14,7 +14,7 @@ minute = now.minute
 second = now.second
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log format
     filename=os.path.join(
         logdir, f"app.log" # -{year}-{month}-{day}-{hour}-{minute}-{second}
