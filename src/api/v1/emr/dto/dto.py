@@ -33,3 +33,6 @@ class EMRUpdateDto(BaseModel):
     assessment: Optional[str] = None
     plan: Optional[str] = None
     prescription: Optional[Dict[str, Any]] = None
+
+class EMRFilterDto(BaseModel):
+    id: Optional[UUID] = None
