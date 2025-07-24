@@ -13,7 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-router = APIRouter(prefix="/doctors", tags=["doctors"])
+router = APIRouter(prefix="/doctors", tags=["Doctors"])
 logger = logging.getLogger(__name__)
 
 
@@ -83,11 +83,11 @@ async def create_doctor(
         DoctorDto.model_validate(doctor)
 
         return doctor
-    except IntegrityError as e:
+    except IntegrityError as e:  # client sent data that violates database constraints
         await db.rollback()
         logger.error(f"Error creating doctor: {str(e)}", exc_info=True)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Error creating doctor"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Integrity error occurred."
         )
 
     except Exception as e:
@@ -116,6 +116,15 @@ async def get_doctor_by_id(
             )
 
         return doctor
+    except HTTPException:
+        logger.error(f"Doctor with id {doctor_id} not found.")
+        raise
+    except IntegrityError as e:
+        logger.error(f"Database error while fetching doctor {doctor_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Database error while fetching doctor: {e}",
+        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Database error"
@@ -165,6 +174,10 @@ async def update_doctor(
         await db.refresh(doctor)  # refresh to get updated values
 
         return doctor
+
+    except HTTPException:
+        logger.error(f"Doctor with id {doctor_id} not found.")
+        raise
     except IntegrityError as e:
         await db.rollback()
         logger.error(f"Database error while updating doctor {doctor_id}: {e}")
@@ -202,6 +215,10 @@ async def delete_doctor(
 
         await db.delete(doctor)
         await db.commit()
+
+    except HTTPException:
+        logger.error(f"Doctor with id {doctor_id} not found.")
+        raise
 
     except IntegrityError as e:
         await db.rollback()

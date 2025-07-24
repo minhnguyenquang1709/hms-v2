@@ -10,14 +10,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
-
-
 def init_app(init_db: bool = True):
-    lifespan = None # type: ignore
+    lifespan = None  # type: ignore
     if init_db:
         session_manager.init(config.DB_CONFIG)
-        
+
         @asynccontextmanager
         async def lifespan(app: FastAPI):
             """
@@ -30,7 +27,9 @@ def init_app(init_db: bool = True):
                     await session_manager.create_all(conn)
                 logger.info("Database session manager initialized")
             except Exception as e:
-                logger.critical(f"Failed to initialize database session manager: {str(e)}")
+                logger.critical(
+                    f"Failed to initialize database session manager: {str(e)}"
+                )
                 raise
             yield
             # add cleanup code when the app shuts down.
@@ -39,6 +38,7 @@ def init_app(init_db: bool = True):
 
     server = FastAPI(lifespan=lifespan, title="HIS")
     return server
+
 
 app = init_app()
 
@@ -83,4 +83,4 @@ def favicon():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app="src.main:app", host="localhost", port=4000, reload=True)
+    uvicorn.run(app="src.main:app", host="0.0.0.0", port=4000, reload=True, log_level="trace")

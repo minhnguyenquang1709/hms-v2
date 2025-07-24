@@ -5,6 +5,7 @@ from uuid import UUID
 
 
 class DoctorDto(BaseModel):
+    id: UUID
     name: str
     gender: str
     dob: date
@@ -16,8 +17,16 @@ class DoctorDto(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class DoctorCreateDto(DoctorDto):
-    id: UUID
+class DoctorCreateDto(BaseModel):
+    name: str
+    gender: str
+    dob: date
+    specialty: str
+    phone: str
+    address: str
+    department_id: UUID
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DoctorUpdateDto(BaseModel):
@@ -28,3 +37,5 @@ class DoctorUpdateDto(BaseModel):
     phone: str | None = None
     address: str | None = None
     department_id: UUID | None = None
+
+    model_config = ConfigDict(from_attributes=True)
