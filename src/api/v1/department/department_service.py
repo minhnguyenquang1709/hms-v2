@@ -24,9 +24,9 @@ class DepartmentService:
             )
 
     @staticmethod
-    async def create_department(db: AsyncSession, department_data: DepartmentCreateDto):
+    async def create_department(db: AsyncSession, dto: DepartmentCreateDto):
         try:
-            department = Department(**department_data.model_dump())
+            department = Department(**dto.model_dump())
             db.add(department)
             await db.commit()
             await db.refresh(department)
@@ -72,7 +72,7 @@ class DepartmentService:
 
     @staticmethod
     async def update_department(
-        db: AsyncSession, department_id: UUID, update_data: DepartmentUpdateDto
+        db: AsyncSession, department_id: UUID, dto: DepartmentUpdateDto
     ):
         try:
             result = await db.execute(
@@ -85,7 +85,7 @@ class DepartmentService:
                     status_code=status.HTTP_404_NOT_FOUND, detail="Department not found"
                 )
 
-            update_dict = update_data.model_dump(exclude_unset=True)
+            update_dict = dto.model_dump(exclude_unset=True)
             for key, value in update_dict.items():
                 setattr(department, key, value)
 

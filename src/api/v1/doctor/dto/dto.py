@@ -38,7 +38,6 @@ class DoctorUpdateDto(BaseModel):
     address: str | None = None
     department_id: UUID | None = None
 
-    model_config = ConfigDict(from_attributes=True)
 
 class DoctorFilterDto(BaseModel):
     id: UUID | None = None
