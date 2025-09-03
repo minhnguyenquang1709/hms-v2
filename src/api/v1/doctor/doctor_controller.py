@@ -22,7 +22,7 @@ async def list_doctors(
     #     UserData, Depends(require_permission(EPermission.READ_DOCTOR))
     # ],
     db: Annotated[AsyncSession, Depends(get_db)],
-    dto: DoctorFilterDto,
+    dto: Annotated[DoctorFilterDto, Depends()],
 ):
     """
     List doctors.

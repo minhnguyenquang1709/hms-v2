@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,6 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from .api import api_router
 from .config.db import config, get_db, session_manager
 import logging
+from dotenv import load_dotenv
+
+load_dotenv()
+
+EXPOSE_PORT = int(os.getenv("EXPOSE_PORT", 4000))
 
 logger = logging.getLogger(__name__)
 
@@ -83,4 +89,4 @@ def favicon():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app="src.main:app", host="0.0.0.0", port=4000, reload=True, log_level="trace")
+    uvicorn.run(app="src.main:app", host="0.0.0.0", port=EXPOSE_PORT, reload=True)

@@ -40,8 +40,7 @@ class DoctorUpdateDto(BaseModel):
 
 
 class DoctorFilterDto(BaseModel):
-    id: UUID | None = None
-    name: str | None = None
+    # id: UUID | None = None
     name: str | None = None
     gender: Literal["Male", "Female"] | None = None
     dob: date | None = None
