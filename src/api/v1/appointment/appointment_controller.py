@@ -57,3 +57,4 @@ async def delete_appointment(
     db: Annotated[AsyncSession, Depends(get_db)], appointment_id: UUID
 ):
     return await AppointmentService.delete_appointment(db, appointment_id)
+

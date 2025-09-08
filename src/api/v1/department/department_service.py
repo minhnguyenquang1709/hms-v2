@@ -15,6 +15,7 @@ class DepartmentService:
         try:
             result = await db.execute(select(Department))
             departments = result.scalars().all()
+            
             return [DepartmentDto.model_validate(d) for d in departments]
 
         except Exception as e:

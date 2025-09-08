@@ -5,17 +5,13 @@ from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
-    AsyncSession,
+    AsyncSession,  # group operations in a transaction, support rollback/commit
     AsyncAttrs,
     AsyncEngine,
     AsyncConnection,
 )
 from sqlalchemy.orm import DeclarativeBase, declarative_base
 import contextlib  # allow context management.
-
-# context manager:
-# - allows you to allocate and release resources precisely when you want to.
-# - ensures resources are always closed at the end
 
 load_dotenv()
 
@@ -41,14 +37,13 @@ class Base(AsyncAttrs, DeclarativeBase):
     pass
 
 
-# abstracting the database connection and session handling
 class DatabaseSessionManager:
     # create the object first (__init__), then configure it later with more details (init).
     def __init__(self):
         """
         Sets up default values or empty attributes.
         """
-        self._engine: AsyncEngine | None = None
+        self._engine: AsyncEngine | None = None  # connection pool manager
         self._sessionmaker: async_sessionmaker | None = None  # factory pattern
 
     def init(self, host_url: str):
@@ -60,7 +55,7 @@ class DatabaseSessionManager:
         """
         self._engine = create_async_engine(
             url=host_url,
-            echo=True,  # enable logging, use the python 'logging' module under the hood
+            echo=True,  # use the python 'logging' module under the hood, print SQL statements
             pool_size=20,
             pool_pre_ping=True,
             pool_recycle=3600,
