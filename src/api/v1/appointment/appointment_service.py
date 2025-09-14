@@ -154,3 +154,22 @@ class AppointmentService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"An error occurred while deleting the appointment with id {appointment_id}.",
             )
+
+    @staticmethod
+    async def list_departments(db: AsyncSession):
+        try:
+            result = await db.execute(select(Appointment.department_id).distinct())
+            departments = result.scalars().all()
+            return departments
+        except IntegrityError as e:
+            logger.error(f"Integrity error while listing departments: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Integrity error occurred.",
+            )
+        except Exception as e:
+            logger.error(f"Error listing departments: {str(e)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while listing departments.",
+            )

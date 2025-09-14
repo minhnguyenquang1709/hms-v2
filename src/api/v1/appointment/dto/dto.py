@@ -21,7 +21,7 @@ class AppointmentCreateDto(BaseModel):
     department_id: UUID
     doctor_id: Optional[UUID] = None
     start_time: datetime
-    end_time: datetime
+    # end_time: datetime
     status: Optional[str] = "scheduled"
     notes: Optional[str] = None
 
