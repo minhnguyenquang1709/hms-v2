@@ -1,31 +1,33 @@
 from pydantic import BaseModel, ConfigDict
-from datetime import date
-from typing import List, Optional, Literal
+import datetime
+from typing import Optional, Literal
 from uuid import UUID
 
-class PatientDto(BaseModel):
+
+class PatientProfileDto(BaseModel):
     id: UUID
-    name: str
+    user_id: UUID
+    full_name: str
     gender: Literal["Male", "Female"]
-    dob: date
+    dob: datetime.date
     phone: str
     address: str
-    chronic_conditions: Optional[List[str]] = None
 
     model_config = ConfigDict(from_attributes=True)
 
-class PatientCreateDto(BaseModel):
-    name: str
-    gender: Literal["Male", "Female"]
-    dob: date
-    phone: str
-    address: str
-    chronic_conditions: Optional[List[str]] = None
+
+# class PatientCreateDto(BaseModel):
+#     name: str
+#     gender: Literal["Male", "Female"]
+#     dob: date
+#     phone: str
+#     address: str
+#     chronic_conditions: Optional[List[str]] = None
+
 
 class PatientUpdateDto(BaseModel):
-    name: Optional[str] = None
+    full_name: Optional[str] = None
     gender: Optional[Literal["Male", "Female"]] = None
-    dob: Optional[date] = None
+    dob: Optional[datetime.date] = None
     phone: Optional[str] = None
     address: Optional[str] = None
-    chronic_conditions: Optional[List[str]] = None

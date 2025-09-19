@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 import logging
 
+from src.api.v1.models.auth import PatientProfile
+from src.api.v1.patient.dto.dto import PatientProfileDto, PatientUpdateDto
 from src.config.db import get_db
-from .dto import PatientDto, PatientCreateDto, PatientUpdateDto
-from src.api.v1.models.patient import Patient
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +16,9 @@ class PatientService:
     @staticmethod
     async def list_patients(db: AsyncSession):
         try:
-            result = await db.execute(select(Patient))
+            result = await db.execute(select(PatientProfile))
             patients = result.scalars().all()
-            return [PatientDto.model_validate(p) for p in patients]
+            return [PatientProfileDto.model_validate(p) for p in patients]
 
         except Exception as e:
             logger.error(f"Error listing patients: {str(e)}", exc_info=True)
@@ -28,13 +28,13 @@ class PatientService:
             )
 
     @staticmethod
-    async def create_patient(db: AsyncSession, dto: PatientCreateDto):
+    async def create_patient(db: AsyncSession, dto: PatientProfileDto):
         try:
-            patient = Patient(**dto.model_dump())
+            patient = PatientProfile(**dto.model_dump())
             db.add(patient)
             await db.commit()
             await db.refresh(patient)
-            return PatientDto.model_validate(patient)
+            return PatientProfileDto.model_validate(patient)
 
         except IntegrityError as e:
             await db.rollback()
@@ -55,7 +55,7 @@ class PatientService:
     @staticmethod
     async def get_patient(db: AsyncSession, patient_id: UUID):
         try:
-            result = await db.execute(select(Patient).where(Patient.id == patient_id))
+            result = await db.execute(select(PatientProfile).where(PatientProfile.id == patient_id))
             patient = result.scalars().first()
 
             if not patient:
@@ -63,7 +63,7 @@ class PatientService:
                     status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
                 )
 
-            return PatientDto.model_validate(patient)
+            return PatientProfileDto.model_validate(patient)
 
         except HTTPException:
             raise  # Re-raise handled exceptions
@@ -80,7 +80,7 @@ class PatientService:
         db: AsyncSession, patient_id: UUID, update_data: PatientUpdateDto
     ):
         try:
-            result = await db.execute(select(Patient).where(Patient.id == patient_id))
+            result = await db.execute(select(PatientProfile).where(PatientProfile.id == patient_id))
             patient = result.scalars().first()
 
             if not patient:
@@ -95,7 +95,7 @@ class PatientService:
 
             await db.commit()
             await db.refresh(patient)
-            return PatientDto.model_validate(patient)
+            return PatientUpdateDto.model_validate(patient)
 
         except IntegrityError as e:
             await db.rollback()
@@ -119,7 +119,7 @@ class PatientService:
     @staticmethod
     async def delete_patient(db: AsyncSession, patient_id: UUID):
         try:
-            result = await db.execute(select(Patient).where(Patient.id == patient_id))
+            result = await db.execute(select(PatientProfile).where(PatientProfile.id == patient_id))
             patient = result.scalars().first()
 
             if not patient:

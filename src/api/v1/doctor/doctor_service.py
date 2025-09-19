@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.api.v1.models.auth import DoctorProfile
 from src.api.v1.models.department import Department
 from .dto import *
 import logging
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from src.api.v1.models.doctor import Doctor
 from fastapi import HTTPException, status
 
 logger = logging.getLogger(__name__)
@@ -13,42 +13,48 @@ logger = logging.getLogger(__name__)
 
 class DoctorService:
     @staticmethod
-    async def list_doctors(db: AsyncSession, doctor_filter_dto: DoctorFilterDto):
+    async def list_doctors(db: AsyncSession):
         try:
-            query = select(Doctor)
+            query = select(DoctorProfile)
 
-            if doctor_filter_dto.id:
-                query = query.where(Doctor.id == id)
-            if doctor_filter_dto.name:
-                query = query.where(Doctor.name.icontains(doctor_filter_dto.name))
-            if doctor_filter_dto.gender:
-                query = query.where(Doctor.gender == doctor_filter_dto.gender)
-            if doctor_filter_dto.dob:
-                query = query.where(Doctor.dob == doctor_filter_dto.dob)
-            if doctor_filter_dto.specialty:
-                query = query.where(
-                    Doctor.specialty.icontains(doctor_filter_dto.specialty)
-                )
-            if doctor_filter_dto.phone:
-                query = query.where(Doctor.phone.ilike(f"%{doctor_filter_dto.phone}%"))
-            if doctor_filter_dto.address:
-                query = query.where(Doctor.address.icontains(doctor_filter_dto.address))
+            # if doctor_filter_dto.id:
+            #     query = query.where(DoctorProfile.id == id)
+            # if doctor_filter_dto.name:
+            #     query = query.where(
+            #         DoctorProfile.full_name.icontains(doctor_filter_dto.name)
+            #     )
+            # if doctor_filter_dto.gender:
+            #     query = query.where(DoctorProfile.gender == doctor_filter_dto.gender)
+            # if doctor_filter_dto.dob:
+            #     query = query.where(DoctorProfile.dob == doctor_filter_dto.dob)
+            # # if doctor_filter_dto.specialty:
+            # #     query = query.where(
+            # #         DoctorProfile.specialty.icontains(doctor_filter_dto.specialty)
+            # #     )
+            # if doctor_filter_dto.phone:
+            #     query = query.where(
+            #         DoctorProfile.phone.ilike(f"%{doctor_filter_dto.phone}%")
+            #     )
+            # if doctor_filter_dto.address:
+            #     query = query.where(
+            #         DoctorProfile.address.icontains(doctor_filter_dto.address)
+            #     )
 
             logger.debug(f"Executing query: {query}")
 
             result = await db.execute(query)
             doctors = result.scalars().all()  # returns a list
 
-            return [DoctorDto.model_validate(d) for d in doctors]
+            return [DoctorProfileDto.model_validate(d) for d in doctors]
 
         except Exception as e:
             logger.error(f"Error fetching doctors: {str(e)}", exc_info=True)
             raise HTTPException(status_code=500, detail="Error retrieving doctors")
 
     @staticmethod
-    async def create_doctor(db: AsyncSession, dto: DoctorCreateDto):
+    async def create_doctor(db: AsyncSession, dto: DoctorProfileDto):
         try:
-            doctor = Doctor(**dto.model_dump())
+            doctor = DoctorProfile(**dto.model_dump())
 
             db.add(doctor)
             await db.commit()
@@ -56,7 +62,7 @@ class DoctorService:
                 doctor
             )  # doctor now contains the database-generated values
 
-            DoctorDto.model_validate(doctor)
+            DoctorProfileDto.model_validate(doctor)
 
             return doctor
         except (
@@ -80,7 +86,7 @@ class DoctorService:
     @staticmethod
     async def get_doctor_by_id(db: AsyncSession, doctor_id: UUID):
         try:
-            query = select(Doctor).where(Doctor.id == doctor_id)
+            query = select(DoctorProfile).where(DoctorProfile.id == doctor_id)
             result = await db.execute(query)
 
             doctor = result.scalars().first()
@@ -110,7 +116,7 @@ class DoctorService:
     async def update_doctor(db: AsyncSession, doctor_id: UUID, dto: DoctorUpdateDto):
         try:
             # 1. fetch existing entity
-            query = select(Doctor).where(Doctor.id == doctor_id)
+            query = select(DoctorProfile).where(DoctorProfile.id == doctor_id)
             result = await db.execute(query)
             doctor = result.scalars().first()
             if not doctor:
@@ -164,7 +170,7 @@ class DoctorService:
     @staticmethod
     async def delete_doctor(db: AsyncSession, doctor_id: UUID):
         try:
-            query = select(Doctor).where(Doctor.id == doctor_id)
+            query = select(DoctorProfile).where(DoctorProfile.id == doctor_id)
             result = await db.execute(query)
             doctor = result.scalars().first()
             if not doctor:

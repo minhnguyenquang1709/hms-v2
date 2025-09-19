@@ -1,27 +1,15 @@
-from typing import Literal
+from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict
-from datetime import date
+import datetime
 from uuid import UUID
 
 
-class DoctorDto(BaseModel):
+class DoctorProfileDto(BaseModel):
     id: UUID
-    name: str
-    gender: Literal["Male", "Female"]
-    dob: date
-    specialty: str
-    phone: str
-    address: str
-    department_id: UUID
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class DoctorCreateDto(BaseModel):
-    name: str
-    gender: Literal["Male", "Female"]
-    dob: date
-    specialty: str
+    user_id: UUID
+    full_name: str
+    gender: str
+    dob: datetime.date
     phone: str
     address: str
     department_id: UUID
@@ -30,20 +18,9 @@ class DoctorCreateDto(BaseModel):
 
 
 class DoctorUpdateDto(BaseModel):
-    name: str | None = None
-    gender: Literal["Male", "Female"] | None = None
-    dob: date | None = None
-    specialty: str | None = None
-    phone: str | None = None
-    address: str | None = None
-    department_id: UUID | None = None
-
-
-class DoctorFilterDto(BaseModel):
-    # id: UUID | None = None
-    name: str | None = None
-    gender: Literal["Male", "Female"] | None = None
-    dob: date | None = None
-    specialty: str | None = None
-    phone: str | None = None
-    address: str | None = None
+    full_name: Optional[str] = None
+    gender: Optional[Literal["Male", "Female"]] = None
+    dob: Optional[datetime.date] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    department_id: Optional[UUID] = None

@@ -11,9 +11,8 @@ from ....config.db import Base
 
 if TYPE_CHECKING:
     from .appointment import Appointment
-    from .emr import EMR
-    from .working_hours import WorkingHours
-    from .doctor import Doctor
+    # from .working_hours import WorkingHours
+    from .auth import DoctorProfile
 
 
 class Department(Base):
@@ -27,12 +26,7 @@ class Department(Base):
 
     # --- Relationships ---
     # 1 department - many doctors
-    doctors: Mapped[List["Doctor"]] = relationship(back_populates="department")
+    doctors: Mapped[List["DoctorProfile"]] = relationship(back_populates="department")
     
     # 1 department - many appointments
     appointments: Mapped[List["Appointment"]] = relationship(back_populates="department")
-
-    # 1 department - many working hours
-    working_hours: Mapped[List["WorkingHours"]] = relationship(
-        back_populates="department", cascade="all, delete-orphan"
-    )
