@@ -6,13 +6,13 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
 from jwt import PyJWTError
 from src.api.v1.auth.dto.auth_dto import TokenDataDto, UserDto
 from src.api.v1.models.auth import User
 from src.config.db import get_db
-from src.api.v1.auth.auth_service import AuthService
 
 load_dotenv()
 
@@ -60,10 +60,11 @@ async def get_current_user(
         if username is None:
             raise credentials_exception
         token_data = TokenDataDto(username=username)
+
+        user = await db.execute(select(User).where(User.username == username))
+        user = user.scalars().first()
+        if user is None:
+            raise credentials_exception
+        return UserDto(id=user.id, username=user.username, role=user.role)
     except PyJWTError:
         raise credentials_exception
-
-    user = await AuthService.get_user_by_username(db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return UserDto(id=user.id, username=user.username)
