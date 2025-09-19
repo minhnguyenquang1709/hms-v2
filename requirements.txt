@@ -1,3 +1,4 @@
 sqlalchemy>=2.0.41
 pydantic>=2.11.5
-jose>/1.0.0
+jwt
+passlib[argon2]
